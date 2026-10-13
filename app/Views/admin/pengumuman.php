@@ -44,14 +44,17 @@ foreach ($gelombang as $g) { $gelNama[$g['id']] = $g['nama']; }
                             </span>
                         </td>
                         <td class="text-end">
-                            <div class="btn-group btn-group-sm">
-                                <a href="<?php echo url('admin/pengumuman/' . $p['id'] . '/edit'); ?>" class="btn btn-light" title="Ubah">
+                            <div class="d-inline-flex gap-1">
+                                <a href="<?php echo url('admin/pengumuman/' . $p['id'] . '/edit'); ?>" class="btn btn-sm btn-light" title="Ubah">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <a href="<?php echo url('admin/pengumuman/' . $p['id'] . '/hapus'); ?>" class="btn btn-light" title="Hapus"
-                                   onclick="return confirm('Hapus pengumuman ini?')">
-                                    <i class="bi bi-trash"></i>
-                                </a>
+                                <form method="post" action="<?php echo url('admin/pengumuman/' . $p['id'] . '/hapus'); ?>" class="d-inline">
+                                    <?php echo csrf_field(); ?>
+                                    <button type="submit" class="btn btn-sm btn-light" title="Hapus"
+                                            onclick="return confirm('Hapus pengumuman ini?')">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
                             </div>
                         </td>
                     </tr>

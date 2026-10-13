@@ -24,7 +24,7 @@ $router->get('pendaftaran', 'PendaftaranController@form', array('wali_murid'));
 $router->post('pendaftaran', 'PendaftaranController@simpan', array('wali_murid'));
 $router->get('pendaftaran/berkas', 'PendaftaranController@berkas', array('wali_murid'));
 $router->post('pendaftaran/berkas', 'PendaftaranController@unggahBerkas', array('wali_murid'));
-$router->get('pendaftaran/berkas/{id}/hapus', 'PendaftaranController@hapusBerkas', array('wali_murid'));
+$router->post('pendaftaran/berkas/{id}/hapus', 'PendaftaranController@hapusBerkas', array('wali_murid'));
 $router->post('pendaftaran/kirim', 'PendaftaranController@kirim', array('wali_murid'));
 $router->get('pendaftaran/bukti', 'PendaftaranController@bukti', array('wali_murid'));
 $router->get('pendaftaran/status', 'PendaftaranController@status', array('wali_murid'));
@@ -43,7 +43,13 @@ $router->get('admin/gelombang/tambah', 'AdminController@formGelombang', array('a
 $router->post('admin/gelombang', 'AdminController@simpanGelombang', array('admin'));
 $router->get('admin/gelombang/{id}/edit', 'AdminController@editGelombang', array('admin'));
 $router->post('admin/gelombang/{id}', 'AdminController@updateGelombang', array('admin'));
-$router->get('admin/gelombang/{id}/hapus', 'AdminController@hapusGelombang', array('admin'));
+$router->post('admin/gelombang/{id}/hapus', 'AdminController@hapusGelombang', array('admin'));
+
+// Kelola pengguna (persetujuan akun wali murid)
+$router->get('admin/pengguna', 'AdminController@pengguna', array('admin'));
+$router->post('admin/pengguna/{id}/aktifkan', 'AdminController@aktifkanAkun', array('admin'));
+$router->post('admin/pengguna/{id}/nonaktifkan', 'AdminController@nonaktifkanAkun', array('admin'));
+$router->post('admin/pengguna/{id}/hapus', 'AdminController@hapusAkun', array('admin'));
 
 // Seleksi
 $router->get('admin/seleksi', 'AdminController@seleksi', array('admin'));
@@ -55,7 +61,7 @@ $router->get('admin/pengumuman/tambah', 'AdminController@formPengumuman', array(
 $router->post('admin/pengumuman', 'AdminController@simpanPengumuman', array('admin'));
 $router->get('admin/pengumuman/{id}/edit', 'AdminController@editPengumuman', array('admin'));
 $router->post('admin/pengumuman/{id}', 'AdminController@updatePengumuman', array('admin'));
-$router->get('admin/pengumuman/{id}/hapus', 'AdminController@hapusPengumuman', array('admin'));
+$router->post('admin/pengumuman/{id}/hapus', 'AdminController@hapusPengumuman', array('admin'));
 
 // Laporan
 $router->get('admin/laporan', 'AdminController@laporan', array('admin'));

@@ -10,6 +10,7 @@ $roleLabel = array(
 $label = isset($roleLabel[$role]) ? $roleLabel[$role] : $role;
 
 // Menu sidebar berdasarkan peran
+$menungguAkun = 0;
 $menu = array();
 if ($role === 'wali_murid') {
     $menu = array(
@@ -20,9 +21,11 @@ if ($role === 'wali_murid') {
         array('pendaftaran/bukti', 'Cetak Bukti', 'bi-printer'),
     );
 } elseif ($role === 'admin') {
+    $menungguAkun = (new User())->countPending();
     $menu = array(
         array('admin', 'Dashboard', 'bi-speedometer2'),
         array('admin/pendaftar', 'Data Pendaftar', 'bi-people'),
+        array('admin/pengguna', 'Kelola Pengguna', 'bi-person-gear', $menungguAkun),
         array('admin/seleksi', 'Seleksi', 'bi-funnel'),
         array('admin/gelombang', 'Gelombang', 'bi-calendar2-event'),
         array('admin/pengumuman', 'Pengumuman', 'bi-megaphone'),
@@ -68,6 +71,9 @@ $active = $uri;
                 <li class="nav-item">
                     <a class="nav-link <?php echo $isActive ? 'active' : ''; ?>" href="<?php echo url($m[0]); ?>">
                         <i class="bi <?php echo $m[2]; ?> me-2"></i><?php echo $m[1]; ?>
+                        <?php if (isset($m[3]) && (int) $m[3] > 0): ?>
+                        <span class="badge bg-warning text-dark float-end mt-1"><?php echo (int) $m[3]; ?></span>
+                        <?php endif; ?>
                     </a>
                 </li>
             <?php endforeach; ?>

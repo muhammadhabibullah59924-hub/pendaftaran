@@ -24,6 +24,9 @@
                 <p class="text-center text-muted small mb-0">
                     Akun panitia/admin diberikan oleh sekolah.
                 </p>
+                <div class="alert alert-light border small py-2 mt-2 mb-0">
+                    <i class="bi bi-key me-1"></i>Lupa password? Hubungi panitia untuk reset &mdash; password tidak bisa dilihat aplikasi.
+                </div>
             </div>
         </div>
     </div>

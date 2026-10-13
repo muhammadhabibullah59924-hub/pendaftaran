@@ -1,5 +1,6 @@
 <?php
 $title = 'Dashboard';
+$menungguAkun = isset($menunggu_akun) ? (int) $menunggu_akun : 0;
 $statCards = array(
     array('Total Pendaftar', $stats['total'], 'bi-people', 'primary'),
     array('Draft / Belum Kirim', $per_status['draft'], 'bi-pencil-square', 'secondary'),
@@ -11,6 +12,19 @@ $statCards = array(
 ?>
 
 <div class="row g-3 mb-4">
+    <?php if ($menungguAkun > 0): ?>
+    <div class="col-12 mb-2">
+        <div class="alert alert-warning d-flex align-items-center justify-content-between mb-0" role="alert">
+            <div>
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                Ada <b><?php echo $menungguAkun; ?> akun wali murid</b> menunggu persetujuan dan belum bisa login.
+            </div>
+            <a href="<?php echo url('admin/pengguna'); ?>" class="btn btn-sm btn-warning">
+                <i class="bi bi-person-check me-1"></i>Kelola Pengguna
+            </a>
+        </div>
+    </div>
+    <?php endif; ?>
     <?php foreach ($statCards as $c): ?>
     <div class="col-6 col-md-4 col-xl-2 mb-3">
         <div class="card shadow-sm h-100">

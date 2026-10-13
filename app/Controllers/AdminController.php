@@ -22,6 +22,7 @@ class AdminController extends Controller
             'terbaru'  => $pend->terbaru(5),
             'gelombang' => $gel->all(),
             'per_gelombang' => $pend->perGelombang(),
+            'menunggu_akun' => (new User())->countPending(),
         );
         $this->view('admin/dashboard', $data, 'layouts/dashboard');
     }
@@ -274,6 +275,7 @@ class AdminController extends Controller
 
     public function hapusGelombang($id)
     {
+        $this->checkToken();
         $gel = new Gelombang();
         $g = $gel->find($id);
         if (!$g) {
@@ -448,6 +450,7 @@ class AdminController extends Controller
 
     public function hapusPengumuman($id)
     {
+        $this->checkToken();
         $peng = new Pengumuman();
         $p = $peng->find($id);
         if (!$p) {
@@ -538,6 +541,110 @@ class AdminController extends Controller
         header('Content-Disposition: attachment; filename="' . $filename . '"');
         echo $out;
         exit;
+    }
+
+    // ============ KELOLA PENGGUNA ============
+    /** Daftar akun + persetujuan akun wali murid */
+    public function pengguna()
+    {
+        $user = new User();
+        $filter = array(
+            'cari'   => query('cari'),
+            'status' => query('status'),
+            'role'   => query('role'),
+        );
+
+        $roleLabel = array(
+            'wali_murid' => 'Wali Murid',
+            'admin'      => 'Admin / Panitia',
+            'kepsek'     => 'Kepala Sekolah',
+        );
+
+        $data = array(
+            'daftar'    => $user->listUsers($filter),
+            'filter'    => $filter,
+            'menunggu'  => $user->countPending(),
+            'roleLabel' => $roleLabel,
+        );
+        $this->view('admin/pengguna', $data, 'layouts/dashboard');
+    }
+
+    /** Setujui (aktifkan) akun */
+    public function aktifkanAkun($id)
+    {
+        $this->checkToken();
+        $user = new User();
+        $u = $user->find($id);
+
+        if (!$u) {
+            Session::flash('error', 'Akun tidak ditemukan.');
+            redirect('admin/pengguna');
+        }
+        if ($u['aktif']) {
+            Session::flash('info', 'Akun tersebut sudah aktif.');
+            redirect('admin/pengguna');
+        }
+
+        $user->setAktif($id, 1);
+        Session::flash('success', 'Akun <b>' . e($u['nama']) . '</b> (' . e($u['email']) . ') disetujui dan sudah bisa login.');
+        redirect('admin/pengguna');
+    }
+
+    /** Nonaktifkan akun */
+    public function nonaktifkanAkun($id)
+    {
+        $this->checkToken();
+        $user = new User();
+        $u = $user->find($id);
+
+        if (!$u) {
+            Session::flash('error', 'Akun tidak ditemukan.');
+            redirect('admin/pengguna');
+        }
+        if ((int) $u['id'] === (int) Auth::id()) {
+            Session::flash('error', 'Anda tidak dapat menonaktifkan akun sendiri.');
+            redirect('admin/pengguna');
+        }
+        if (!$u['aktif']) {
+            Session::flash('info', 'Akun tersebut sudah nonaktif.');
+            redirect('admin/pengguna');
+        }
+
+        $user->setAktif($id, 0);
+        Session::flash('success', 'Akun <b>' . e($u['nama']) . '</b> dinonaktifkan dan tidak bisa login.');
+        redirect('admin/pengguna');
+    }
+
+    /** Hapus akun */
+    public function hapusAkun($id)
+    {
+        $this->checkToken();
+        $user = new User();
+        $u = $user->find($id);
+
+        if (!$u) {
+            Session::flash('error', 'Akun tidak ditemukan.');
+            redirect('admin/pengguna');
+        }
+        if ((int) $u['id'] === (int) Auth::id()) {
+            Session::flash('error', 'Anda tidak dapat menghapus akun sendiri.');
+            redirect('admin/pengguna');
+        }
+        if ($u['role'] === 'admin' || $u['role'] === 'kepsek') {
+            Session::flash('error', 'Akun panitia/kepala sekolah tidak dapat dihapus dari menu ini.');
+            redirect('admin/pengguna');
+        }
+
+        $jml = $user->countPendaftaran($id);
+        if ($jml > 0) {
+            Session::flash('error', 'Akun ini memiliki <b>' . $jml . ' data pendaftaran</b>. '
+                . 'Hapus atau nonaktifkan saja agar riwayat pendaftaran tetap tersimpan.');
+            redirect('admin/pengguna');
+        }
+
+        $user->delete($id);
+        Session::flash('success', 'Akun <b>' . e($u['nama']) . '</b> (' . e($u['email']) . ') dihapus.');
+        redirect('admin/pengguna');
     }
 
     protected function csvCell($value)

@@ -229,6 +229,7 @@ class PendaftaranController extends Controller
     /** Hapus berkas */
     public function hapusBerkas($id)
     {
+        $this->checkToken();
         $berkas = new Berkas();
         $b = $berkas->find($id);
         $pend = new Pendaftaran();

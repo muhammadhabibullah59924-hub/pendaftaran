@@ -11,7 +11,7 @@ Sistem ini dirancang untuk menggantikan **metode pendaftaran manual** yang berpo
 ## ✨ Fitur
 
 ### Wali Murid
-- Daftar akun (email + password)
+- Daftar akun (email + password) — **menunggu persetujuan panitia** sebelum bisa login
 - Formulir pendaftaran online (data siswa, orang tua/wali, asal sekolah, alamat)
 - Unggah berkas persyaratan (akta kelahiran, KK, KTP ortu, foto, ijazah/skl TK) — JPG/PNG/PDF, maks 2 MB
 - **Nomor pendaftaran otomatis** (format `PSB-2026-0001`)
@@ -23,6 +23,7 @@ Sistem ini dirancang untuk menggantikan **metode pendaftaran manual** yang berpo
 - Data pendaftar + filter (cari, status, gelombang)
 - Detail pendaftar + verifikasi **per-berkas** (valid / tidak valid)
 - Verifikasi pendaftaran (verifikasi / tolak + catatan)
+- **Kelola Pengguna**: setujui / nonaktifkan / hapus akun wali murid
 - Manajemen **gelombang/jalur** pendaftaran (buka/tutup, kuota, periode)
 - Penetapan hasil **seleksi** (diterima / tidak diterima)
 - Kelola **pengumuman**
@@ -77,7 +78,33 @@ Sistem ini dirancang untuk menggantikan **metode pendaftaran manual** yang berpo
 | **Contoh Wali Murid** | `wali.contoh@email.com` | `wali123` |
 
 > ⚠️ **Segera ganti password** akun admin & kepsek setelah login pertama (untuk produksi).
-> Pendaftar umum mendaftar sendiri lewat tombol **Daftar**.
+> Pendaftar umum mendaftar sendiri lewat tombol **Daftar** — akunnya **belum aktif** sampai
+> panitia menyetujuinya lewat menu **Kelola Pengguna**.
+
+---
+
+## ✔️ Alur Verifikasi (2 tahap, jangan tertukar)
+
+**1. Persetujuan AKUN — admin → menu Kelola Pengguna**
+
+| Langkah | Keterangan |
+|---|---|
+| Wali klik **Daftar** | Akun dibuat berstatus **Menunggu**, belum bisa login |
+| Admin buka **Kelola Pengguna** | Baris kuning = akun menunggu, ada badge jumlah di sidebar |
+| Klik **Setujui** | `aktif` jadi 1 → wali bisa login |
+| Klik **Nonaktifkan** | Wali tidak bisa login lagi, bisa diaktifkan kembali |
+| Klik **Hapus** | Hanya untuk akun yang belum punya data pendaftaran |
+
+**2. Verifikasi PENDAFTARAN — admin → Data Pendaftar → Detail**
+
+| Langkah | Keterangan |
+|---|---|
+| Wali isi formulir + unggah berkas + **Kirim Pendaftaran** | Status `draft` → `dikirim` |
+| Admin periksa tiap berkas | Dropdown **Menunggu / Valid / Tidak Valid** per dokumen |
+| Klik **Verifikasi Berkas** atau **Tolak Berkas** | Status → `diverifikasi` / `ditolak` |
+| Klik **Terima Siswa** / **Tidak Terima** | Hasil seleksi akhir |
+
+Setiap perubahan status tercatat di **Riwayat Status** dan bisa dilihat wali di menu **Status Pendaftaran**.
 
 ---
 
@@ -109,6 +136,7 @@ pendaftaran/
 - **PDO Prepared Statements** di semua query → aman dari SQL Injection
 - **password_hash / password_verify** (bcrypt) → password tidak disimpan plain text
 - **CSRF token** pada setiap form
+- **Semua aksi merusak (hapus / nonaktifkan / verifikasi) memakai POST + CSRF** — tidak ada yang bisa dijalankan lewat tautan GET, sehingga aman dari CSRF lewat link yang tidak sengaja diklik
 - **Validasi input** (Validator) & cek role per halaman (middleware otomatis di Router)
 - **Unggah aman**: whitelist ekstensi (JPG/PNG/PDF), batas 2 MB, deteksi MIME asli, nama file acak
 - Berkas tersimpan di `storage/uploads` yang **diblokir .htaccess**, hanya bisa diunduh lewat controller admin

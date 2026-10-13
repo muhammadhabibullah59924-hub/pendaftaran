@@ -39,7 +39,7 @@
                     </li>
                 <?php else: ?>
                     <li class="nav-item"><a class="nav-link" href="<?php echo url('login'); ?>">Login</a></li>
-                    <li class="nav-item"><a class="nav-link btn btn-sm btn-light text-primary ms-2" href="<?php echo url('register'); ?>">Daftar</a></li>
+                    <li class="nav-item"><a class="nav-link btn btn-sm btn-outline-light ms-2" href="<?php echo url('register'); ?>">Daftar</a></li>
                 <?php endif; ?>
             </ul>
         </div>

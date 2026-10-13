@@ -44,7 +44,15 @@ class AuthController extends Controller
             redirect('dashboard');
         }
 
-        Session::flash('error', 'Email atau password salah, atau akun belum aktif.');
+        // Bedakan penyebab gagal login agar wali murid tahu harus menunggu persetujuan
+        $userModel = new User();
+        $cek = $userModel->findByEmail($email);
+        if ($cek && !$cek['aktif']) {
+            Session::flash('error', 'Akun Anda <b>belum disetujui</b> panitia. '
+                . 'Silakan tunggu panitia menyetujui akun, lalu coba login lagi.');
+        } else {
+            Session::flash('error', 'Email atau password salah.');
+        }
         redirect('login');
     }
 
@@ -88,10 +96,13 @@ class AuthController extends Controller
             'email'    => input('email'),
             'password' => password_hash(input('password'), PASSWORD_BCRYPT),
             'role'     => 'wali_murid',
-            'aktif'    => 1,
+            // Akun wali murid baru menunggu persetujuan panitia (lihat menu Kelola Pengguna)
+            'aktif'    => 0,
         ));
 
-        Session::flash('success', 'Akun berhasil dibuat. Silakan login.');
+        Session::flash('success', 'Akun berhasil dibuat dan <b>menunggu persetujuan panitia</b>. '
+            . 'Anda baru bisa login setelah akun disetujui. Silakan tunggu info dari sekolah. '
+            . '<b>&#9888;&#65039; Simpan password Anda &mdash; panitia tidak bisa melihat password Anda.</b>');
         redirect('login');
     }
 

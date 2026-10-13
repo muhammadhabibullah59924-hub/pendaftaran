@@ -51,11 +51,13 @@ $belumList = is_array($belum) ? $belum : array();
                                     <i class="bi bi-arrow-repeat me-1"></i>Ganti
                                 </button>
                             </form>
-                            <a href="<?php echo url('pendaftaran/berkas/' . $sudah['id'] . '/hapus'); ?>"
-                               class="btn btn-sm btn-outline-danger"
-                               onclick="return confirm('Hapus berkas ini?')">
-                                <i class="bi bi-trash"></i>
-                            </a>
+                            <form method="post" action="<?php echo url('pendaftaran/berkas/' . $sudah['id'] . '/hapus'); ?>" class="d-inline">
+                                <?php echo csrf_field(); ?>
+                                <button type="submit" class="btn btn-sm btn-outline-danger"
+                                        onclick="return confirm('Hapus berkas ini?')">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
                         </div>
                     <?php else: ?>
                         <form method="post" action="<?php echo url('pendaftaran/berkas'); ?>" enctype="multipart/form-data">
