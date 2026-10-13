@@ -1,0 +1,15 @@
+# PHP — Sistem PSB-MI Ihyaul Islam
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Sembunyikan direktori aplikasi & penyimpanan
+    RewriteRule ^(app|config|database|storage) - [F,L]
+
+    # Arahkan semua request ke index.php (kecuali file/direktori nyata)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.php [QSA,L]
+</IfModule>
+
+# Larangan akses direktori
+Options -Indexes

@@ -1,0 +1,32 @@
+/* CSS khusus halaman cetak */
+@page {
+    margin: 1.5cm;
+}
+
+body {
+    background: #fff;
+    color: #212529;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+.table-bordered,
+.table-bordered td,
+.table-bordered th {
+    border: 1px solid #adb5bd !important;
+}
+
+.no-print {
+    display: block;
+}
+
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    .bg-white.border.rounded-3 {
+        border: none !important;
+    }
+}

@@ -1,0 +1,10 @@
+# Larangan akses langsung ke berkas yang diunggah
+# Berkas hanya dapat diunduh melalui controller admin
+
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>
